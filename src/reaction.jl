@@ -65,11 +65,11 @@ function fullModel(du, u, pSurf, pEndo, trafP, ILs)
     du[62] = -sum(view(du, halfL+27:halfL+28)) / internalV
 
     # Actually calculate the trafficking
+    du[active_species_IDX] -= u[active_species_IDX] .* (trafP[1] + trafP[2]) # Endocytosis
+    du[active_species_IDX .+ halfL] += u[active_species_IDX] .* (trafP[1] + trafP[2]) ./ internalFrac - trafP[5] .* u[active_species_IDX .+ halfL] # Endocytosis, degradation
+
     for ii in range(1, stop=halfL)
-        if findfirst(isequal(ii), active_species_IDX) != nothing
-            du[ii] += -u[ii]*(trafP[1] + trafP[2]) # Endocytosis
-            du[ii+halfL] += u[ii]*(trafP[1] + trafP[2])/internalFrac - trafP[5]*u[ii+halfL] # Endocytosis, degradation
-        else
+        if findfirst(isequal(ii), active_species_IDX) == nothing
             du[ii] += -u[ii]*trafP[1] + trafP[4]*(1.0 - trafP[3])*u[ii+halfL]*internalFrac # Endocytosis, recycling
             du[ii+halfL] += u[ii]*trafP[1]/internalFrac - trafP[4]*(1.0 - trafP[3])*u[ii+halfL] - (trafP[5]*trafP[3])*u[ii+halfL] # Endocytosis, recycling, degradation
         end
@@ -79,9 +79,7 @@ function fullModel(du, u, pSurf, pEndo, trafP, ILs)
     du[recIDX] += trafP[6:13]
 
     # Degradation does lead to some clearance of ligand in the endosome
-    for ii in range(halfL*2 + 1, stop=halfL*2 + 6)
-        du[ii] -= u[ii] * trafP[5]
-    end
+    du[halfL*2 + 1:end] -= u[halfL*2 + 1:end] .* trafP[5]
 
     return nothing
 end
