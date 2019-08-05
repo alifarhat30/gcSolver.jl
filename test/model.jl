@@ -72,7 +72,7 @@ end
     gcSolver.IL2Deriv(IL2dy, IL2out[1], IL2params, 0.0)
 
     @test all(out[1] .>= 0.0)
-    #@test all(IL2out[1] .>= 0.0)
+    @test all(IL2out[1] .>= 0.0)
 
     @test isapprox(sum(abs.(dy)), 0.0, atol=1.0e-6)
     @test isapprox(sum(abs.(IL2dy)), 0.0, atol=1.0e-6)
@@ -97,8 +97,8 @@ end
     @test all(out .>= 0.0)
     @test all(IL2out .>= 0.0)
 
-    # @test isapprox(sum(abs.(dy)), 0.0, atol=1.0e-12)
-    # @test isapprox(sum(abs.(IL2dy)), 0.0, atol=1.0e-12)
+    @test isapprox(sum(abs.(dy)), 0.0, atol=1.0e-12)
+    @test isapprox(sum(abs.(IL2dy)), 0.0, atol=1.0e-12)
 end
 
 
@@ -106,7 +106,7 @@ end
     @time runCkine(tps, rxntfR, false)
     @time runCkine(tps, IL2params, true)
 
-    for ii in 1:100
+    for ii in 1:10
         @profile runCkine(tps, rxntfR, false)
     end
     Profile.print(noisefloor=2.0)

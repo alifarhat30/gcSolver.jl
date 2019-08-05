@@ -76,7 +76,7 @@ function fullModel(du, u, pSurf, pEndo, trafP, ILs)
     end
 
     # Expression: IL2Ra, IL2Rb, gc, IL15Ra, IL7Ra, IL9R, IL4Ra, IL21Ra
-    du[recIDX] += trafP[6:13]
+    du[recIDX] += trafP[6:end]
 
     # Degradation does lead to some clearance of ligand in the endosome
     du[halfL*2 + 1:end] -= u[halfL*2 + 1:end] .* trafP[5]
@@ -102,8 +102,8 @@ function solveAutocrine(r)
 
     # Assuming no autocrine ligand, so can solve steady state
     # Add the species
-    y0[recIDX .+ halfL] = r[range(5, length=length(recIDX))] / kDeg / internalFrac
-    y0[recIDX] = (r[range(5, length=length(recIDX))] + kRec*y0[recIDX .+ halfL]*internalFrac)/r[1]
+    y0[recIDX .+ halfL] = r[6:end] / kDeg / internalFrac
+    y0[recIDX] = (r[6:end] + kRec*y0[recIDX .+ halfL] * internalFrac) / r[1]
 
     return y0
 end

@@ -91,7 +91,7 @@ function runCkine(tps, params, IL2case)
 
     prob = ODEProblem(f, u0, (0.0, maximum(tps)), params)
 
-    sol = solve(prob, TRBDF2(); reltol=1.0e-6)
+    sol = solve(prob, TRBDF2(); reltol=1.0e-6, isoutofdomain=(u, p, t) -> any(x -> x < -0.01, u))
 
     return sol(tps).u
 end
