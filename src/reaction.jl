@@ -94,7 +94,7 @@ function solveAutocrine(r)
 
     # Check if we're working with the no trafficking model
     if r[1] == 0.0
-        y0[recIDX] = r[5, length=length(recIDX))]
+        y0[recIDX] = r[5, length=length(recIDX)]
         return y0
     end
 
