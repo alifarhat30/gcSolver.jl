@@ -1,7 +1,7 @@
 module gcSolver
 
 using OrdinaryDiffEq
-using DiffEqSensitivity
+using ForwardDiff
 
 include("reaction.jl")
 
@@ -83,9 +83,14 @@ function runCkine(tps, params, IL2case)
 
     prob = ODEProblem(f, u0, (0.0, maximum(tps)), params)
 
-    sol = solve(prob, TRBDF2())
+    sol = solve(prob, TRBDF2(); reltol=1.0e-6)
 
     return sol(tps).u
+end
+
+
+function runCkineS(tps, params, IL2case)
+    return ForwardDiff.gradient(pp -> runCkine(tps, pp, IL2case), params)::Vector{Float64}
 end
 
 
